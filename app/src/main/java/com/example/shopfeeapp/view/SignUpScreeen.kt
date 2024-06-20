@@ -46,6 +46,7 @@ import org.json.JSONObject
 fun SignUpScreen(viewModel: LoginViewModel,
                  navHostController: NavHostController,
                  onClickToLoginScreen:()->Unit,
+                 onCickSignUp:()->Unit,
                  modifier: Modifier = Modifier) {
 
     val viewstate by viewModel.usersState

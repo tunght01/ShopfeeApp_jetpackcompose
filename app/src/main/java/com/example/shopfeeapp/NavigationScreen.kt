@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -31,6 +32,7 @@ import com.example.shopfeeapp.view.DetailScreen
 import com.example.shopfeeapp.view.LoginScreen
 import com.example.shopfeeapp.view.MainScreen
 import com.example.shopfeeapp.view.SignUpScreen
+import com.example.shopfeeapp.viewmodel.DetailCartViewModel
 import com.example.shopfeeapp.viewmodel.LoginViewModel
 import kotlinx.coroutines.launch
 
@@ -46,6 +48,7 @@ fun Navigation(
         var isLoading by remember { mutableStateOf(true) }
         var email by remember { mutableStateOf("") }
         val scope = rememberCoroutineScope()
+        val viewModelDetail:DetailCartViewModel = viewModel()
 
         // Fetch email and update states
         LaunchedEffect(Unit) {
@@ -118,13 +121,19 @@ fun Navigation(
                     navHostController = navController,
                     onClickToLoginScreen = {
                         navController.navigate(Screen.LoginScreen.route)
-                    }
+                    },
+                    onCickSignUp = {}
                 )
             }
             composable(Screen.DetailScreen.route) {
                 val drink = navController.previousBackStackEntry?.savedStateHandle?.get<Drink>("drink")
                 if (drink != null) {
                     DetailScreen(drink = drink, onClickCart = {
+                        scope.launch {
+                            if ()
+                            viewModelDetail.addOrderDetail(it)
+
+                        }
                         navController.navigate("cart")
                     })
                 } else {
@@ -137,7 +146,10 @@ fun Navigation(
 //                CartScreen(onClickBack = {
 //                    navController.popBackStack()
 //                })
-                DetailOrderCartScreen(navHostController = navController, modifier = Modifier, onClickDateil = {})
+                Log.e("tung","deailscrenn composobale")
+                DetailOrderCartScreen(navHostController = navController, modifier = Modifier, onClickBack = {
+                    navController.popBackStack()
+                })
             }
         }
     }

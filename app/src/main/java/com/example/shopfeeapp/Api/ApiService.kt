@@ -5,6 +5,7 @@ import com.example.shopfeeapp.model.DetailOrderCart
 import com.example.shopfeeapp.model.Drink
 import com.example.shopfeeapp.model.User
 import okhttp3.RequestBody
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.create
@@ -24,8 +25,8 @@ interface ApiService{
 
     @POST("auth/local/register")
     suspend fun registerUser(@Body requestBody: RequestBody):User
-    @POST("cart/add")
-    suspend fun addToCart(@Body requestBody: RequestBody)
+    @POST("Detailodercarts")
+    suspend fun addOrderDetail(@Body detailOrderCart: DetailOrderCart): Response<Unit>
     @GET("Detailodercarts")
     suspend fun getDetailOrder():List<DetailOrderCart>
 }

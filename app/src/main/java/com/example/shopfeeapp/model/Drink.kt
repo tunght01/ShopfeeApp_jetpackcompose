@@ -66,7 +66,7 @@ data class Thumbnail(
 // OrderDetail data class
 @Parcelize
 data class DetailOrderCart(
-    val id: Int,
+//    val id: Int,
     val users_permissions_user: User,
 //    val order: Order?,
     val drink: Drink,

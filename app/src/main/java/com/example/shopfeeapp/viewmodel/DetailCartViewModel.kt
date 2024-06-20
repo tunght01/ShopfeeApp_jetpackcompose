@@ -10,11 +10,13 @@ import com.example.shopfeeapp.Api.recipeService
 import com.example.shopfeeapp.model.DetailOrderCart
 import com.example.shopfeeapp.model.Drink
 import com.example.shopfeeapp.model.User
+import com.example.shopfeeapp.repository.OrderRepository
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import okhttp3.RequestBody
 
-class DetailCartViewModel: ViewModel() {
+//class DetailCartViewModel(private val orderRepository: OrderRepository): ViewModel() {
+class DetailCartViewModel(): ViewModel() {
     private val _detailOrderState = mutableStateOf(DetailOderState())
     val DetailOrderState: State<DetailOderState> = _detailOrderState
 
@@ -26,30 +28,28 @@ class DetailCartViewModel: ViewModel() {
     fun getDetailOrder() {
         Log.e("tung","success")
         viewModelScope.launch {
-
             try {
-                val respone = recipeService.getDetailOrder()
-                Log.e("tung", "${respone.size}")
-//                Log.e("tung", "${respone.last().sales}")
+                val response = recipeService.getDetailOrder()
+                Log.e("tung","getdetailorder ${response.size}")
                 _detailOrderState.value = _detailOrderState.value.copy(
-                    list = respone,
-                    error = null,
-//                    loadding = true
-
+                    list = response,
+                    error = null
                 )
-            }catch (e:Exception){
+            } catch (e: Exception) {
+                Log.e("detail", "${e.message}")
                 _detailOrderState.value = _detailOrderState.value.copy(
-                    error = "Error fetching User ${e.message}"
+                    error = "Error fetching order details: ${e.message}"
                 )
             }
         }
 
     }
-    data class ProductState(
-        val list: List<Drink> = emptyList(),
-//        val loadding:Boolean = false,
-        val error: String? = null
-    )
+    fun addOrderDetail(detailOrderCart: DetailOrderCart) {
+        viewModelScope.launch {
+            val response = recipeService.addOrderDetail(detailOrderCart)
+        }
+    }
+
     data class DetailOderState(
         val list: List<DetailOrderCart> = emptyList(),
         val error: String? = null

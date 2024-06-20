@@ -66,10 +66,12 @@ import com.example.shopfeeapp.viewmodel.ProductViewModel
 fun DetailOrderCartScreen(
     navHostController: NavHostController,
     modifier: Modifier = Modifier,
-    onClickDateil: (Drink) -> Unit
+    onClickBack: () -> Unit
 ){
+    Log.e("tung", "vao duoc composoble")
     val detailCartViewModel: DetailCartViewModel = viewModel()
     val viewstate by detailCartViewModel.DetailOrderState
+    Log.e("tung", "khong vao duoc composoble")
 
         when{
             viewstate.error != null ->{
@@ -79,9 +81,11 @@ fun DetailOrderCartScreen(
             else ->{
                 Log.e("detail", "${viewstate.list.size}")
                 Log.e("detail", "thanhconmg roi")
-                CartScreen(orderCart = viewstate.list) {
+                CartScreen(orderCart = viewstate.list, onClickBack = {
+                    onClickBack()
+                })
 
-                }
+
             }
         }
 

@@ -55,11 +55,14 @@ import coil.compose.rememberImagePainter
 import coil.transform.CircleCropTransformation
 import com.example.shopfeeapp.Api.api
 import com.example.shopfeeapp.R
+import com.example.shopfeeapp.model.DetailOrderCart
 import com.example.shopfeeapp.model.Drink
 import com.example.shopfeeapp.model.FomartUtility
+import com.example.shopfeeapp.model.User
+import com.example.shopfeeapp.viewmodel.DetailCartViewModel
 
 @Composable
-fun DetailScreen(drink: Drink, onClickCart:()->Unit) {
+fun DetailScreen(drink: Drink, onClickCart:(DetailOrderCart)->Unit, ) {
 
     val (isColdSelected, setColdSelected) = remember { mutableStateOf(false) }
     val (isHotSelected, setHotSelected) = remember { mutableStateOf(false) }
@@ -484,7 +487,11 @@ fun DetailScreen(drink: Drink, onClickCart:()->Unit) {
                     Spacer(modifier = Modifier.height(10.dp))
                     Text(text = FomartUtility().format(price = totalPrice.value), style = TextStyle(fontWeight = FontWeight.Bold))
                 }
-                Button(onClick = { onClickCart() }, modifier = Modifier.wrapContentSize(), colors = ButtonDefaults.buttonColors(
+            val detailOrderCart = DetailOrderCart(users_permissions_user = User(1,"tunghathanh","tung.hathanh.it@gmail.com"), drink = drink, Quantity = quality.value, Price = totalPrice.value, Size = "Nhỏ", Sugarlevel = "Bình thường", Temperature = "Nóng", Topping = "Chan trâu trắng")
+                Button(onClick = {
+
+                    onClickCart(detailOrderCart)
+                                 }, modifier = Modifier.wrapContentSize(), colors = ButtonDefaults.buttonColors(
                     backgroundColor = Color("#5D4037".toColorInt()
                     ),
                     contentColor = Color.White
