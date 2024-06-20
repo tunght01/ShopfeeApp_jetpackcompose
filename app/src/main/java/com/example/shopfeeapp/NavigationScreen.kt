@@ -25,6 +25,8 @@ import com.example.shopfeeapp.datastore.StoreUserEmail
 import com.example.shopfeeapp.model.Drink
 import com.example.shopfeeapp.model.Screen
 import com.example.shopfeeapp.view.CartScreen
+import com.example.shopfeeapp.view.DetailCartItem
+import com.example.shopfeeapp.view.DetailOrderCartScreen
 import com.example.shopfeeapp.view.DetailScreen
 import com.example.shopfeeapp.view.LoginScreen
 import com.example.shopfeeapp.view.MainScreen
@@ -132,9 +134,10 @@ fun Navigation(
                 }
             }
             composable("cart") {
-                CartScreen(onClickBack = {
-                    navController.popBackStack()
-                })
+//                CartScreen(onClickBack = {
+//                    navController.popBackStack()
+//                })
+                DetailOrderCartScreen(navHostController = navController, modifier = Modifier, onClickDateil = {})
             }
         }
     }

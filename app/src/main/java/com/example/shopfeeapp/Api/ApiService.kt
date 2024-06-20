@@ -1,6 +1,7 @@
 package com.example.shopfeeapp.Api
 
 
+import com.example.shopfeeapp.model.DetailOrderCart
 import com.example.shopfeeapp.model.Drink
 import com.example.shopfeeapp.model.User
 import okhttp3.RequestBody
@@ -23,7 +24,10 @@ interface ApiService{
 
     @POST("auth/local/register")
     suspend fun registerUser(@Body requestBody: RequestBody):User
-
+    @POST("cart/add")
+    suspend fun addToCart(@Body requestBody: RequestBody)
+    @GET("Detailodercarts")
+    suspend fun getDetailOrder():List<DetailOrderCart>
 }
 
 

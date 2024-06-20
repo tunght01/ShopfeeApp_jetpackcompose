@@ -89,6 +89,8 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended:1.6.8")
     implementation("androidx.datastore:datastore-preferences:1.0.0")
 //    implementation ("org.jetbrains.kotlin:kotlin-parcelize-runtime:$nav_version")
+    implementation("io.coil-kt:coil-compose:2.1.0")
+
 
 
     implementation(libs.androidx.core.ktx)

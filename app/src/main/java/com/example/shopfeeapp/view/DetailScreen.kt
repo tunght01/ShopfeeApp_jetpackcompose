@@ -50,6 +50,10 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.core.graphics.toColorInt
 import androidx.navigation.NavHostController
+import coil.compose.rememberAsyncImagePainter
+import coil.compose.rememberImagePainter
+import coil.transform.CircleCropTransformation
+import com.example.shopfeeapp.Api.api
 import com.example.shopfeeapp.R
 import com.example.shopfeeapp.model.Drink
 import com.example.shopfeeapp.model.FomartUtility
@@ -88,17 +92,19 @@ fun DetailScreen(drink: Drink, onClickCart:()->Unit) {
             val (image, boxDetail, boxOption, boxChose, note) = createRefs()
 
             Image(
-                painter = painterResource(id = R.drawable.coffee2),
+//                painter = rememberImagePainter(
+//                    data = "http://${api}:1337${drink.ImageUrl?.url}",
+//                ),
+                painter = rememberAsyncImagePainter("http://$api:1337"+drink.ImageUrl?.url),
                 contentDescription = null,
+                contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .constrainAs(image) {
                         start.linkTo(parent.start)
                     }
-                    .fillMaxHeight(0.4f)
-                    .fillMaxWidth(),
-                contentScale = ContentScale.Crop,
-
-                )
+                    .fillMaxWidth()
+                    .height(200.dp) // Adjust the height as needed
+            )
 
             Box(
                 modifier = Modifier

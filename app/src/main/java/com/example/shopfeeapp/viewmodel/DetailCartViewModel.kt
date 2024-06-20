@@ -1,5 +1,6 @@
 package com.example.shopfeeapp.viewmodel
 
+
 import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -13,39 +14,15 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import okhttp3.RequestBody
 
-class ProductViewModel: ViewModel() {
-    private val _productState = mutableStateOf(ProductState())
+class DetailCartViewModel: ViewModel() {
     private val _detailOrderState = mutableStateOf(DetailOderState())
-    val ProductsState: State<ProductState> = _productState
     val DetailOrderState: State<DetailOderState> = _detailOrderState
 
     init {
-        fetchUsers()
-//        getDetailOrder()
+        getDetailOrder()
     }
 
-    private fun fetchUsers() {
-        Log.e("tung","success")
-        viewModelScope.launch {
 
-            try {
-                val respone = recipeService.getProduct()
-                Log.e("tung", "${respone.size}")
-                Log.e("tung", "${respone.last().sales}")
-                _productState.value = _productState.value.copy(
-                    list = respone,
-                    error = null,
-//                    loadding = true
-
-                )
-            }catch (e:Exception){
-                _productState.value = _productState.value.copy(
-                    error = "Error fetching User ${e.message}"
-                )
-            }
-        }
-
-    }
     fun getDetailOrder() {
         Log.e("tung","success")
         viewModelScope.launch {
@@ -61,7 +38,7 @@ class ProductViewModel: ViewModel() {
 
                 )
             }catch (e:Exception){
-                _productState.value = _productState.value.copy(
+                _detailOrderState.value = _detailOrderState.value.copy(
                     error = "Error fetching User ${e.message}"
                 )
             }

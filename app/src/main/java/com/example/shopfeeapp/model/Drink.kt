@@ -64,9 +64,19 @@ data class Thumbnail(
 ):Parcelable
 
 // OrderDetail data class
-//data class OrderDetail(
-//    // Define the fields based on your actual JSON structure for order details
-//)
+@Parcelize
+data class DetailOrderCart(
+    val id: Int,
+    val users_permissions_user: User,
+//    val order: Order?,
+    val drink: Drink,
+    val Quantity: Int,
+    val Temperature: String,
+    val Sugarlevel: String,
+    val Topping: String,
+    val Size: String,
+    val Price: Int,
+) : Parcelable
 
 // Rate data class
 @Parcelize
@@ -76,7 +86,23 @@ data class Rate(
     val drink: Int,
     val Rating: Int,
     val Review: String,
-    val published_at: String,
-    val created_at: String,
-    val updated_at: String
 ):Parcelable
+@Parcelize
+data class Order(
+    val id: Int,
+    val orderDate: String,
+    val TotalAmount: Int,
+    val payment_method: String?,
+    val deliver_adress: String?,
+    val promotion: Promotion,
+    val orderStatus: String,
+    val users_permissions_users: User,
+    val detailodercarts: List<DetailOrderCart>
+) : Parcelable
+@Parcelize
+data class Promotion(
+    val id: Int,
+    val name: String,
+    val description: String,
+    val discount: Int,
+) : Parcelable
