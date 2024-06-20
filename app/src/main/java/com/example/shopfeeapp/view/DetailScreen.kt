@@ -487,7 +487,18 @@ fun DetailScreen(drink: Drink, onClickCart:(DetailOrderCart)->Unit, ) {
                     Spacer(modifier = Modifier.height(10.dp))
                     Text(text = FomartUtility().format(price = totalPrice.value), style = TextStyle(fontWeight = FontWeight.Bold))
                 }
-            val detailOrderCart = DetailOrderCart(users_permissions_user = User(1,"tunghathanh","tung.hathanh.it@gmail.com"), drink = drink, Quantity = quality.value, Price = totalPrice.value, Size = "Nhỏ", Sugarlevel = "Bình thường", Temperature = "Nóng", Topping = "Chan trâu trắng")
+            val detailOrderCart = DetailOrderCart(
+                users_permissions_user = User(1,"tunghathanh","tung.hathanh.it@gmail.com"),
+                drink = drink,
+                Quantity = quality.value, Price = totalPrice.value,
+                Size = checkSize(
+                    isSmall = isSizeSmallSelected.value,
+                    isMedium = isSizeMediumSelected.value,
+                    isLarge = isSizeLargeSelected.value),
+                Sugarlevel = checkSugar(isFair = isSugarNormalSelected, isIncreaSugar = isSugarReducedSelected),
+                Temperature = checkIce(isCold = isColdSelected, isHot = isHotSelected),
+                Topping = checkTopping(isTranchauden = isChantrau.value, isTranchautrang = isTranChauTrang.value, isduakho = isDuaKho.value, isThach = isThach.value)
+            )
                 Button(onClick = {
 
                     onClickCart(detailOrderCart)
@@ -505,6 +516,31 @@ fun DetailScreen(drink: Drink, onClickCart:(DetailOrderCart)->Unit, ) {
 
 
 
+}
+
+fun checkSize(isSmall:Boolean, isMedium:Boolean, isLarge:Boolean):(String){
+    if (isLarge) return "Nhỏ"
+    else if(isMedium) return "Vừa"
+    else if (isLarge) return "Lớn"
+    else return ""
+}
+fun checkSugar(isFair:Boolean, isIncreaSugar:Boolean):(String){
+    if (isFair) return "Bình thường"
+    else if(isIncreaSugar) return "Giảm bớt"
+
+    else return ""
+}
+fun checkIce(isHot:Boolean, isCold:Boolean):(String){
+    if (isCold) return "Lạnh"
+    else if(isHot) return "Nóng"
+    else return ""
+}
+fun checkTopping(isTranchauden:Boolean, isTranchautrang:Boolean,isduakho:Boolean, isThach:Boolean):(String){
+    if (isTranchauden) return "Trân châu đen"
+    else if(isTranchautrang) return "Trân châu trắng"
+    else if (isduakho) return "Dừa khô"
+    else if(isThach) return "Thạch 7 màu"
+    else return ""
 }
 @SuppressLint("ResourceAsColor")
 @Composable

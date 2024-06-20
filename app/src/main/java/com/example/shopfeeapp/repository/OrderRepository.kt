@@ -11,11 +11,11 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
 import org.json.JSONObject
 
-class OrderRepository(private  val ApiService:ApiService) {
+class OrderRepository() {
     suspend fun getOrderDetail(): List<DetailOrderCart> {
         return try {
             Log.e("detail","hihihi")
-            ApiService.getDetailOrder()
+            recipeService.getDetailOrder()
         } catch (e: Exception) {
 
             // Xử lý ngoại lệ và trả về danh sách rỗng nếu có lỗi
@@ -25,7 +25,7 @@ class OrderRepository(private  val ApiService:ApiService) {
     }
     suspend fun addOrderDetail(detailOrderCart: DetailOrderCart) {
         try {
-            val response = ApiService.addOrderDetail(detailOrderCart)
+            val response = recipeService.addOrderDetail(detailOrderCart)
             if (response.isSuccessful) {
                 // Xử lý khi thêm chi tiết đơn hàng thành công
                 Log.d("OrderRepository", "Order detail added successfully")

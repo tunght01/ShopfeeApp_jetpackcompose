@@ -12,6 +12,8 @@ import retrofit2.create
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.PUT
+import retrofit2.http.Path
 
 val api:String = "192.168.0.107"
 private val retrofit = Retrofit.Builder().baseUrl("http://$api:1337/").addConverterFactory(GsonConverterFactory.create()).build()
@@ -27,6 +29,11 @@ interface ApiService{
     suspend fun registerUser(@Body requestBody: RequestBody):User
     @POST("Detailodercarts")
     suspend fun addOrderDetail(@Body detailOrderCart: DetailOrderCart): Response<Unit>
+    @PUT("Detailodercarts/{id}")
+    suspend fun updateOrderDetail(
+        @Path("id") id: Int, // Thêm Path parameter cho id
+        @Body detailOrderCart: DetailOrderCart
+    ): Response<Unit>
     @GET("Detailodercarts")
     suspend fun getDetailOrder():List<DetailOrderCart>
 }

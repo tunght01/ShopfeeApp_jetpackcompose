@@ -22,7 +22,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.shopfeeapp.Api.recipeService
 import com.example.shopfeeapp.datastore.StoreUserEmail
+import com.example.shopfeeapp.model.DetailOrderCart
 import com.example.shopfeeapp.model.Drink
 import com.example.shopfeeapp.model.Screen
 import com.example.shopfeeapp.view.CartScreen
@@ -130,11 +132,45 @@ fun Navigation(
                 if (drink != null) {
                     DetailScreen(drink = drink, onClickCart = {
                         scope.launch {
-                            if ()
-                            viewModelDetail.addOrderDetail(it)
+                            val state = recipeService.getDetailOrder()
+//                            Log.e("hihi","${state.list.size}")
+                            if (state.size !=0){
+                                for (detailItem in state){
+                                    if (detailItem.users_permissions_user == it.users_permissions_user
+                                        && detailItem.drink.id == it.drink.id
+                                        && detailItem.Topping == it.Topping
+                                        && detailItem.Size == it.Size
+                                        && detailItem.Sugarlevel == it.Sugarlevel
+                                        && detailItem.Temperature == it.Temperature
+                                    ){
+                                        val updatedQuantity = detailItem.Quantity + it.Quantity
+                                        val updatedPrice = it.drink.Price * updatedQuantity // Thay đổi nếu cần thiết
+                                        val updatedDetailItem = DetailOrderCart(
+                                            id = detailItem.id, // Giữ nguyên id của detailItem
+                                            users_permissions_user = it.users_permissions_user,
+                                            drink = it.drink,
+                                            Quantity = updatedQuantity,
+                                            Price = updatedPrice ,// Cập nhật giá mới
+                                            Topping = it.Topping,
+                                            Size = it.Size,
+                                            Sugarlevel = it.Sugarlevel,
+                                            Temperature = it.Temperature
+                                        )
+                                        viewModelDetail.updateOrderDetail(detailItem.id!!, updatedDetailItem)
+//                                    navController.navigate("cart")
+                                    }else{
+                                        viewModelDetail.addOrderDetail(it)
+                                    }
+                                    break
+                                }
+                            }else{
+                                viewModelDetail.addOrderDetail(it)
+                            }
 
                         }
-                        navController.navigate("cart")
+                                                            navController.navigate("cart")
+
+
                     })
                 } else {
                     Log.e("Navigation", "Drink data is null")

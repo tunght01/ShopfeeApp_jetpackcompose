@@ -16,10 +16,14 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Checkbox
+import androidx.compose.material.CheckboxDefaults
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -34,6 +38,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -46,6 +52,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.core.graphics.toColorInt
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -71,23 +78,24 @@ fun DetailOrderCartScreen(
     Log.e("tung", "vao duoc composoble")
     val detailCartViewModel: DetailCartViewModel = viewModel()
     val viewstate by detailCartViewModel.DetailOrderState
+
     Log.e("tung", "khong vao duoc composoble")
 
-        when{
-            viewstate.error != null ->{
-                Log.e("detail", "${viewstate.error}")
-                Text("${viewstate.error}")
-            }
-            else ->{
-                Log.e("detail", "${viewstate.list.size}")
-                Log.e("detail", "thanhconmg roi")
-                CartScreen(orderCart = viewstate.list, onClickBack = {
-                    onClickBack()
-                })
-
-
-            }
+    when{
+        viewstate.error != null ->{
+            Log.e("detail", "${viewstate.error}")
+            Text("${viewstate.error}")
         }
+        else ->{
+            Log.e("detail", "${viewstate.list.size}")
+            Log.e("detail", "thanhconmg roi")
+            CartScreen(orderCart = viewstate.list, onClickBack = {
+                onClickBack()
+            })
+
+
+        }
+    }
 
 
 }
@@ -97,8 +105,11 @@ fun DetailOrderCartScreen(
 @Composable
 fun CartScreen(orderCart: List<DetailOrderCart>,onClickBack:()->Unit){
 
+
     Column (){
-        Column (modifier = Modifier.weight(1f)){
+        Column (modifier = Modifier
+            .weight(1f)
+            .verticalScroll(rememberScrollState())){
             Row (modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically){
                 IconButton(onClick = { onClickBack() }) {
                     Icon(Icons.Default.ArrowBack, contentDescription = null)
@@ -110,13 +121,29 @@ fun CartScreen(orderCart: List<DetailOrderCart>,onClickBack:()->Unit){
                 thickness = 0.8.dp,  // Độ dày của đường line
                 modifier = Modifier.padding(vertical = 5.dp) // Khoảng cách trên dưới của Divider
             )
-            LazyColumn {
-                items(orderCart){
-                    orderCartItem->
-                    DetailCartItem(detailOrderCart = orderCartItem)
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
 
+            ) {
+                orderCart.forEachIndexed { index, orderCartItem ->
+                    if (index > 0) {
+                        Divider(
+                            color = Color.Gray,
+                            thickness = 0.8.dp,
+
+                        )
+                    }
+                    DetailCartItem(detailOrderCart = orderCartItem, isChecked = false, onChangeCheckBox = {})
                 }
             }
+//            LazyColumn {
+//                items(orderCart){
+//                        orderCartItem->
+//                    DetailCartItem(detailOrderCart = orderCartItem)
+//
+//                }
+//            }
 
             Divider(
                 color = Color.LightGray, // Màu sắc của đường line
@@ -174,8 +201,6 @@ fun CartScreen(orderCart: List<DetailOrderCart>,onClickBack:()->Unit){
                 }
                 Text(text = "Chưa áp dụng mã khuyến mại")
             }
-
-
         }
         Row (modifier = Modifier
             .fillMaxWidth()
@@ -190,9 +215,9 @@ fun CartScreen(orderCart: List<DetailOrderCart>,onClickBack:()->Unit){
 
             Column (modifier = Modifier
                 .padding(10.dp)){
-                androidx.compose.material.Text(text = "Tổng tiền")
+                Text(text = "Tổng tiền")
                 Spacer(modifier = Modifier.height(10.dp))
-                androidx.compose.material.Text(
+                Text(
                     text = FomartUtility().format(price = 60000),
                     style = TextStyle(fontWeight = FontWeight.Bold)
                 )
@@ -206,8 +231,11 @@ fun CartScreen(orderCart: List<DetailOrderCart>,onClickBack:()->Unit){
             }
 
         }
-        }
+    }
 
+
+}
+fun TotalCost(){
 
 }
 @Composable
@@ -216,7 +244,7 @@ fun MethodPayment(
     status:String,
     onClickOption:()->Unit,
 
-){
+    ){
     Row (modifier = Modifier
         .fillMaxWidth()
         .padding(top = 10.dp, start = 10.dp), horizontalArrangement = Arrangement.SpaceBetween){
@@ -235,14 +263,20 @@ fun MethodPayment(
 
 }
 @Composable
-fun DetailCartItem(detailOrderCart: DetailOrderCart){
-    Row (modifier = Modifier.padding(top= 10.dp, start = 10.dp, end = 10.dp)){
+fun DetailCartItem(detailOrderCart: DetailOrderCart,isChecked:Boolean, onChangeCheckBox:()->Unit){
+    Row (modifier = Modifier.padding(top= 10.dp, end = 10.dp)){
+        Checkbox(checked = isChecked, onCheckedChange = {
+            onChangeCheckBox()
+        },
+            colors = CheckboxDefaults.colors(
+                Color("#5D4037".toColorInt())
+            ))
         Image(
-                painter = rememberAsyncImagePainter("http://$api:1337"+detailOrderCart.drink.ImageUrl?.url),
+            painter = rememberAsyncImagePainter("http://$api:1337"+detailOrderCart.drink.ImageUrl?.url),
             contentDescription = null,
 
             modifier = Modifier
-                .size(50.dp) // Adjust size as needed
+                .size(40.dp) // Adjust size as needed
                 .clip(shape = CircleShape),
             contentScale = ContentScale.Crop,
         )
@@ -275,7 +309,7 @@ fun DetailCartItem(detailOrderCart: DetailOrderCart){
                         Icon(Icons.Default.Remove, contentDescription = null, modifier = Modifier.size(15.dp))
                     }
                     Text(
-                        text = "1",
+                        text = "${detailOrderCart.Quantity}",
 //                            modifier = Modifier.padding(horizontal = 16.dp)
                     )
                     IconButton(onClick = {

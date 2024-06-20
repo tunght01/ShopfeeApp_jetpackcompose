@@ -49,6 +49,21 @@ class DetailCartViewModel(): ViewModel() {
             val response = recipeService.addOrderDetail(detailOrderCart)
         }
     }
+    fun updateOrderDetail(id:Int,detailOrderCart: DetailOrderCart) {
+        viewModelScope.launch {
+            try {
+                val response = recipeService.updateOrderDetail(id, detailOrderCart)
+                if (response.isSuccessful) {
+                    Log.e("update","update thanh cong")
+                } else {
+                    // Xử lý khi cập nhật không thành công
+                }
+            } catch (e: Exception) {
+                Log.e("update","${e.message}")
+            }
+
+        }
+    }
 
     data class DetailOderState(
         val list: List<DetailOrderCart> = emptyList(),
