@@ -1,6 +1,8 @@
 package com.example.shopfeeapp.view
 
 import android.annotation.SuppressLint
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 
@@ -40,6 +42,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.shopfeeapp.R
 import com.example.shopfeeapp.datastore.StoreUserEmail
+import com.example.shopfeeapp.model.LoginRequest
 import com.example.shopfeeapp.model.NavigationBottomScreen
 import com.example.shopfeeapp.model.Screen
 import com.example.shopfeeapp.model.User
@@ -52,14 +55,14 @@ fun LoginScreen(
 
     navHostController: NavHostController,
     modifier: Modifier = Modifier,
-    onClickToMainScreen:(Boolean)->Unit,
+    onClickToMainScreen:()->Unit,
     onClickToSignupScreen:()->Unit,
 
 ) {
 
     val viewModel: LoginViewModel = viewModel()
     val viewstate by viewModel.usersState
-    var emailValue by remember { mutableStateOf("") }
+    var userValue by remember { mutableStateOf("") }
     var passwprdValue by remember { mutableStateOf("") }
     var check by remember {
         mutableStateOf(false)
@@ -84,13 +87,13 @@ fun LoginScreen(
             )
             Spacer(modifier = Modifier.height(10.dp))
             Text(
-                text = "Email",
+                text = "Username",
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 10.dp)
             )
-            OutlineTextFieldCustom(value = emailValue) {
-                emailValue = it
+            OutlineTextFieldCustom(value = userValue) {
+                userValue = it
             }
             Spacer(modifier = Modifier.height(10.dp))
             Text(
@@ -103,20 +106,21 @@ fun LoginScreen(
                 passwprdValue = it
             }
             Spacer(modifier = Modifier.height(20.dp))
-            for (user :User in viewstate.list) {
-                if (emailValue == user.email) {
-                    check = true
-                    break
-                } else check = false
-            }
+
             Button(
                 onClick = {
-                    if(check){
-                        scope.launch {
-                            storeUserEmail.saveEmail(emailValue)
+                    val loginRequest = LoginRequest(userValue.trim(),passwprdValue.trim())
+                    viewModel.loginUser(userValue.trim(),passwprdValue.trim()){jwt, user ->
+
+                        if (jwt != null) {
+                            scope.launch {
+                                storeUserEmail.saveEmail(user!!.email)
+                            }
+                            onClickToMainScreen()
+                        }else{
+//                            Toast.makeText(,"Tai khoan hoac mat khau sai",Toast.LENGTH_SHORT)
                         }
                     }
-                    onClickToMainScreen(check)
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -126,7 +130,7 @@ fun LoginScreen(
                     containerColor = Color(R.color.brown),
                     contentColor = Color(R.color.brown),
                 ),
-                enabled = (emailValue.isNotEmpty() && passwprdValue.isNotEmpty()),
+                enabled = (userValue.isNotEmpty() && passwprdValue.isNotEmpty()),
                 shape = RoundedCornerShape(15.dp)
             ) {
                 Text(text = "Đăng nhập", color = Color.White)

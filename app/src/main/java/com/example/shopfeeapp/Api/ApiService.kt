@@ -3,8 +3,11 @@ package com.example.shopfeeapp.Api
 
 import com.example.shopfeeapp.model.DetailOrderCart
 import com.example.shopfeeapp.model.Drink
+import com.example.shopfeeapp.model.LoginRequest
+import com.example.shopfeeapp.model.LoginResponse
 import com.example.shopfeeapp.model.User
 import okhttp3.RequestBody
+import retrofit2.Call
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -36,6 +39,8 @@ interface ApiService{
     ): Response<Unit>
     @GET("Detailodercarts")
     suspend fun getDetailOrder():List<DetailOrderCart>
+    @POST("/auth/local")
+    fun login(@Body loginRequest:LoginRequest):LoginResponse
 }
 
 

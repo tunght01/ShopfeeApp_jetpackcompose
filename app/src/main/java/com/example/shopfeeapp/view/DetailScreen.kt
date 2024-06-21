@@ -519,7 +519,7 @@ fun DetailScreen(drink: Drink, onClickCart:(DetailOrderCart)->Unit, ) {
 }
 
 fun checkSize(isSmall:Boolean, isMedium:Boolean, isLarge:Boolean):(String){
-    if (isLarge) return "Nhỏ"
+    if (isSmall) return "Nhỏ"
     else if(isMedium) return "Vừa"
     else if (isLarge) return "Lớn"
     else return ""
@@ -536,11 +536,13 @@ fun checkIce(isHot:Boolean, isCold:Boolean):(String){
     else return ""
 }
 fun checkTopping(isTranchauden:Boolean, isTranchautrang:Boolean,isduakho:Boolean, isThach:Boolean):(String){
-    if (isTranchauden) return "Trân châu đen"
-    else if(isTranchautrang) return "Trân châu trắng"
-    else if (isduakho) return "Dừa khô"
-    else if(isThach) return "Thạch 7 màu"
-    else return ""
+    var topping =""
+    if (isTranchauden) topping += "Trân châu đen,"
+    if(isTranchautrang) topping += "Trân châu trắng,"
+    if (isduakho) topping += "Dừa khô,"
+    if(isThach) topping += "Thạch 7 màu,"
+    return topping
+
 }
 @SuppressLint("ResourceAsColor")
 @Composable

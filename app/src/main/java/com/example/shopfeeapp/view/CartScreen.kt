@@ -38,6 +38,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -104,6 +105,9 @@ fun DetailOrderCartScreen(
 
 @Composable
 fun CartScreen(orderCart: List<DetailOrderCart>,onClickBack:()->Unit){
+    val checkBoxStates = remember { mutableStateListOf<Boolean>().apply {
+        addAll(List(orderCart.size) { false })
+    } }
 
 
     Column (){
@@ -134,7 +138,13 @@ fun CartScreen(orderCart: List<DetailOrderCart>,onClickBack:()->Unit){
 
                         )
                     }
-                    DetailCartItem(detailOrderCart = orderCartItem, isChecked = false, onChangeCheckBox = {})
+                    DetailCartItem(
+                        detailOrderCart = orderCartItem,
+                        isChecked = checkBoxStates[index],
+                        onChangeCheckBox = { isChecked ->
+                            checkBoxStates[index] = isChecked
+                        })
+
                 }
             }
 //            LazyColumn {
@@ -263,11 +273,11 @@ fun MethodPayment(
 
 }
 @Composable
-fun DetailCartItem(detailOrderCart: DetailOrderCart,isChecked:Boolean, onChangeCheckBox:()->Unit){
+fun DetailCartItem(detailOrderCart: DetailOrderCart,isChecked:Boolean, onChangeCheckBox:(Boolean)->Unit){
     Row (modifier = Modifier.padding(top= 10.dp, end = 10.dp)){
-        Checkbox(checked = isChecked, onCheckedChange = {
-            onChangeCheckBox()
-        },
+        Checkbox(checked = isChecked, onCheckedChange =
+            onChangeCheckBox
+        ,
             colors = CheckboxDefaults.colors(
                 Color("#5D4037".toColorInt())
             ))

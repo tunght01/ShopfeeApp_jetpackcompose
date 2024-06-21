@@ -86,7 +86,7 @@ fun Navigation(
                         navController.navigate(Screen.SignupScreen.route)
                     },
                     onClickToMainScreen = {
-                        if (it) navController.navigate(Screen.MainScreen.route)
+                       navController.navigate(Screen.MainScreen.route)
                     }
                 )
             }
@@ -157,18 +157,22 @@ fun Navigation(
                                             Temperature = it.Temperature
                                         )
                                         viewModelDetail.updateOrderDetail(detailItem.id!!, updatedDetailItem)
+                                        navController.navigate("cart")
 //                                    navController.navigate("cart")
+                                        break
                                     }else{
                                         viewModelDetail.addOrderDetail(it)
+                                        navController.navigate("cart")
+                                        break
                                     }
-                                    break
                                 }
                             }else{
                                 viewModelDetail.addOrderDetail(it)
+                                navController.navigate("cart")
                             }
 
                         }
-                                                            navController.navigate("cart")
+
 
 
                     })

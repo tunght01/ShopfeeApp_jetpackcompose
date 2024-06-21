@@ -8,7 +8,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.shopfeeapp.Api.ApiService
 import com.example.shopfeeapp.Api.recipeService
+import com.example.shopfeeapp.model.LoginRequest
 import com.example.shopfeeapp.model.User
+import com.example.shopfeeapp.model.UserResponse
 import kotlinx.coroutines.launch
 import okhttp3.RequestBody
 
@@ -47,6 +49,20 @@ class LoginViewModel:ViewModel() {
             }catch (e:Exception){
                 onResult(null)
 
+            }
+        }
+    }
+    fun loginUser(username: String, password: String, onResult: (String?, UserResponse?) -> Unit) {
+        val loginRequest = LoginRequest(username, password)
+
+        viewModelScope.launch {
+            try {
+                val response = recipeService.login(loginRequest)
+                val token = response.jwt
+                val userResponse = response.user
+                onResult(token,userResponse)
+            } catch (e: Exception) {
+                onResult(null,null)
             }
         }
     }
