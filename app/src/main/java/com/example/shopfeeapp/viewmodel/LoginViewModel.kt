@@ -10,7 +10,7 @@ import com.example.shopfeeapp.Api.ApiService
 import com.example.shopfeeapp.Api.recipeService
 import com.example.shopfeeapp.model.LoginRequest
 import com.example.shopfeeapp.model.User
-import com.example.shopfeeapp.model.UserResponse
+import com.example.shopfeeapp.model.UserRespone
 import kotlinx.coroutines.launch
 import okhttp3.RequestBody
 
@@ -40,6 +40,21 @@ class LoginViewModel:ViewModel() {
         }
 
     }
+//    private fun findUsersId() {
+//        Log.e("tung","success")
+//        viewModelScope.launch {
+//            try {
+//                val respone = recipeService.getUserId()
+//
+//                )
+//            }catch (e:Exception){
+//                _userState.value = _userState.value.copy(
+//                    error = "Error fetching User ${e.message}"
+//                )
+//            }
+//        }
+//
+//    }
     fun registerUser(requestBody:RequestBody, onResult:(User?) -> Unit){
         viewModelScope.launch {
             try {
@@ -52,16 +67,29 @@ class LoginViewModel:ViewModel() {
             }
         }
     }
-    fun loginUser(username: String, password: String, onResult: (String?, UserResponse?) -> Unit) {
-        val loginRequest = LoginRequest(username, password)
-
+//    fun registerUser(requestBody:RequestBody, onResult:(User?) -> Unit){
+//        viewModelScope.launch {
+//            try {
+//                val response = recipeService.registerUser(requestBody = requestBody)
+//                onResult(response)
+//
+//            }catch (e:Exception){
+//                onResult(null)
+//
+//            }
+//        }
+//    }
+    fun loginUser(loginRequest: LoginRequest, onResult: (String?, UserRespone?) -> Unit) {
         viewModelScope.launch {
             try {
                 val response = recipeService.login(loginRequest)
                 val token = response.jwt
+                Log.e("tung","token $token")
                 val userResponse = response.user
                 onResult(token,userResponse)
             } catch (e: Exception) {
+                Log.e("tung","token ${e.message}")
+
                 onResult(null,null)
             }
         }

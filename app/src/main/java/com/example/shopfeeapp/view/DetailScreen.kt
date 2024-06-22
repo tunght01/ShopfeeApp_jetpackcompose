@@ -35,12 +35,16 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -49,20 +53,25 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.core.graphics.toColorInt
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import coil.compose.rememberImagePainter
 import coil.transform.CircleCropTransformation
 import com.example.shopfeeapp.Api.api
 import com.example.shopfeeapp.R
+import com.example.shopfeeapp.datastore.StoreUser
+import com.example.shopfeeapp.datastore.StoreUserEmail
+import com.example.shopfeeapp.extension.FooterFixed
 import com.example.shopfeeapp.model.DetailOrderCart
 import com.example.shopfeeapp.model.Drink
 import com.example.shopfeeapp.model.FomartUtility
 import com.example.shopfeeapp.model.User
+import com.example.shopfeeapp.model.UserRespone
 import com.example.shopfeeapp.viewmodel.DetailCartViewModel
 
 @Composable
-fun DetailScreen(drink: Drink, onClickCart:(DetailOrderCart)->Unit, ) {
+fun DetailScreen(drink: Drink,onClickCart:(DetailOrderCart)->Unit, ) {
 
     val (isColdSelected, setColdSelected) = remember { mutableStateOf(false) }
     val (isHotSelected, setHotSelected) = remember { mutableStateOf(false) }
@@ -85,6 +94,25 @@ fun DetailScreen(drink: Drink, onClickCart:(DetailOrderCart)->Unit, ) {
     }
     val textNote = remember {
         mutableStateOf("")
+    }
+
+    val context = LocalContext.current
+    val storeUser = StoreUser(context)
+    var user by remember { mutableStateOf(User(1, "tunghihi", "user1@gmial.com",null)) }
+    LaunchedEffect(Unit) {
+        user = storeUser.fetchUser()!! // Gọi hàm fetchEmail()
+
+    }
+
+//    LaunchedEffect(Unit) {
+//        user = storeUser.fetchUser() // Gọi hàm fetchEmail()
+//
+//    }
+
+
+    val detailCartViewModel: DetailCartViewModel = viewModel()
+    LaunchedEffect(Unit) {
+        detailCartViewModel.setUsername(user.username)
     }
     Column {
         ConstraintLayout (modifier = Modifier
@@ -469,47 +497,20 @@ fun DetailScreen(drink: Drink, onClickCart:(DetailOrderCart)->Unit, ) {
             }
 
         }
-        Row (modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 10.dp)
-            .background(
-                color = Color("#F4EFEB".toColorInt()),
-                shape = RoundedCornerShape(5.dp)
-            ),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ){
-
-                Column (modifier = Modifier
-                    .fillMaxWidth(0.45f)
-                    .padding(10.dp)){
-                    Text(text = "Tổng tiền")
-                    Spacer(modifier = Modifier.height(10.dp))
-                    Text(text = FomartUtility().format(price = totalPrice.value), style = TextStyle(fontWeight = FontWeight.Bold))
-                }
-            val detailOrderCart = DetailOrderCart(
-                users_permissions_user = User(1,"tunghathanh","tung.hathanh.it@gmail.com"),
-                drink = drink,
-                Quantity = quality.value, Price = totalPrice.value,
-                Size = checkSize(
-                    isSmall = isSizeSmallSelected.value,
-                    isMedium = isSizeMediumSelected.value,
-                    isLarge = isSizeLargeSelected.value),
-                Sugarlevel = checkSugar(isFair = isSugarNormalSelected, isIncreaSugar = isSugarReducedSelected),
-                Temperature = checkIce(isCold = isColdSelected, isHot = isHotSelected),
-                Topping = checkTopping(isTranchauden = isChantrau.value, isTranchautrang = isTranChauTrang.value, isduakho = isDuaKho.value, isThach = isThach.value)
-            )
-                Button(onClick = {
-
-                    onClickCart(detailOrderCart)
-                                 }, modifier = Modifier.wrapContentSize(), colors = ButtonDefaults.buttonColors(
-                    backgroundColor = Color("#5D4037".toColorInt()
-                    ),
-                    contentColor = Color.White
-                )) {
-                    Text(text = "Thêm vào giỏ hàng", maxLines = 1, textAlign = TextAlign.Center)
-            }
-
+        val detailOrderCart = DetailOrderCart(
+            users_permissions_user = user,
+            drink = drink,
+            Quantity = quality.value, Price = totalPrice.value,
+            Size = checkSize(
+                isSmall = isSizeSmallSelected.value,
+                isMedium = isSizeMediumSelected.value,
+                isLarge = isSizeLargeSelected.value),
+            Sugarlevel = checkSugar(isFair = isSugarNormalSelected, isIncreaSugar = isSugarReducedSelected),
+            Temperature = checkIce(isCold = isColdSelected, isHot = isHotSelected),
+            Topping = checkTopping(isTranchauden = isChantrau.value, isTranchautrang = isTranChauTrang.value, isduakho = isDuaKho.value, isThach = isThach.value)
+        )
+        FooterFixed(price = totalPrice.value.toFloat(), textButton = "Thêm vào giỏ hàng") {
+            onClickCart(detailOrderCart)
         }
 
     }

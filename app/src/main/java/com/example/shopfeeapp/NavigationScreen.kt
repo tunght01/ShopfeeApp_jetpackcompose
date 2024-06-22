@@ -27,6 +27,7 @@ import com.example.shopfeeapp.datastore.StoreUserEmail
 import com.example.shopfeeapp.model.DetailOrderCart
 import com.example.shopfeeapp.model.Drink
 import com.example.shopfeeapp.model.Screen
+import com.example.shopfeeapp.model.UserRespone
 import com.example.shopfeeapp.view.CartScreen
 import com.example.shopfeeapp.view.DetailCartItem
 import com.example.shopfeeapp.view.DetailOrderCartScreen
@@ -85,12 +86,18 @@ fun Navigation(
                     onClickToSignupScreen = {
                         navController.navigate(Screen.SignupScreen.route)
                     },
-                    onClickToMainScreen = {
-                       navController.navigate(Screen.MainScreen.route)
+                    onClickToMainScreen = {user ->
+                        val currentEntry = navController.currentBackStackEntry
+                        if (currentEntry != null) {
+                            currentEntry.savedStateHandle.set("userres", user)
+                            navController.navigate(Screen.MainScreen.route)
+                        }
+
                     }
                 )
             }
             composable(Screen.MainScreen.route) {
+                val user = navController.previousBackStackEntry?.savedStateHandle?.get<UserRespone>("userres")
                 MainScreen(
                     viewModel = viewModel,
                     onClickScreen = { drink ->
@@ -114,7 +121,12 @@ fun Navigation(
                                 popUpTo(Screen.FlashScreen.route) { inclusive = true } // Xóa hết các destination trước đó khỏi back stack
                             }
                         }
+                    },
+                    onClickCart = {
+                        navController.navigate("Cart")
                     }
+
+
                 )
             }
             composable(Screen.SignupScreen.route) {
@@ -130,9 +142,9 @@ fun Navigation(
             composable(Screen.DetailScreen.route) {
                 val drink = navController.previousBackStackEntry?.savedStateHandle?.get<Drink>("drink")
                 if (drink != null) {
-                    DetailScreen(drink = drink, onClickCart = {
+                    DetailScreen(drink = drink,onClickCart = {
                         scope.launch {
-                            val state = recipeService.getDetailOrder()
+                            val state = recipeService.getDetailOrderUser(email)
 //                            Log.e("hihi","${state.list.size}")
                             if (state.size !=0){
                                 for (detailItem in state){

@@ -19,18 +19,18 @@ import okhttp3.RequestBody
 class DetailCartViewModel(): ViewModel() {
     private val _detailOrderState = mutableStateOf(DetailOderState())
     val DetailOrderState: State<DetailOderState> = _detailOrderState
+    private var username: String? = null
 
-    init {
-        getDetailOrder()
+    fun setUsername(username: String) {
+        this.username = username
+        getDetailOrder(username)
     }
-
-
-    fun getDetailOrder() {
-        Log.e("tung","success")
+    private fun getDetailOrder(username: String) {
+        Log.e("tung", "success")
         viewModelScope.launch {
             try {
-                val response = recipeService.getDetailOrder()
-                Log.e("tung","getdetailorder ${response.size}")
+                val response = recipeService.getDetailOrderUser(username)
+                Log.e("tung", "getdetailorder ${response.size}")
                 _detailOrderState.value = _detailOrderState.value.copy(
                     list = response,
                     error = null
@@ -42,7 +42,6 @@ class DetailCartViewModel(): ViewModel() {
                 )
             }
         }
-
     }
     fun addOrderDetail(detailOrderCart: DetailOrderCart) {
         viewModelScope.launch {

@@ -41,11 +41,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -62,6 +64,9 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.shopfeeapp.Api.api
 import com.example.shopfeeapp.R
 import com.example.shopfeeapp.data.TextBold
+import com.example.shopfeeapp.datastore.StoreUserEmail
+import com.example.shopfeeapp.extension.FooterFixed
+import com.example.shopfeeapp.extension.HeaderIconBack
 import com.example.shopfeeapp.model.DetailOrderCart
 import com.example.shopfeeapp.model.Drink
 import com.example.shopfeeapp.model.FomartUtility
@@ -76,11 +81,24 @@ fun DetailOrderCartScreen(
     modifier: Modifier = Modifier,
     onClickBack: () -> Unit
 ){
+    val context = LocalContext.current
+    val storeUserEmail = StoreUserEmail(context)
+    var username by remember {
+        mutableStateOf("")
+    }
+    LaunchedEffect(Unit) {
+        username = storeUserEmail.fetchEmail() // Gọi hàm fetchEmail()
+
+    }
+
     Log.e("tung", "vao duoc composoble")
     val detailCartViewModel: DetailCartViewModel = viewModel()
+    LaunchedEffect(username) {
+        detailCartViewModel.setUsername(username)
+    }
     val viewstate by detailCartViewModel.DetailOrderState
 
-    Log.e("tung", "khong vao duoc composoble")
+    Log.e("tung", "viewstate ${viewstate.list.size}")
 
     when{
         viewstate.error != null ->{
@@ -105,20 +123,17 @@ fun DetailOrderCartScreen(
 
 @Composable
 fun CartScreen(orderCart: List<DetailOrderCart>,onClickBack:()->Unit){
-    val checkBoxStates = remember { mutableStateListOf<Boolean>().apply {
-        addAll(List(orderCart.size) { false })
-    } }
+    val checkBoxStates = remember {
+        mutableStateOf(true)
+    }
 
 
     Column (){
         Column (modifier = Modifier
             .weight(1f)
             .verticalScroll(rememberScrollState())){
-            Row (modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically){
-                IconButton(onClick = { onClickBack() }) {
-                    Icon(Icons.Default.ArrowBack, contentDescription = null)
-                }
-                Text(text = "Giỏ hàng")
+            HeaderIconBack(title = "Giỏ hàng") {
+                onClickBack()
             }
             Divider(
                 color = Color.Gray, // Màu sắc của đường line
@@ -140,9 +155,9 @@ fun CartScreen(orderCart: List<DetailOrderCart>,onClickBack:()->Unit){
                     }
                     DetailCartItem(
                         detailOrderCart = orderCartItem,
-                        isChecked = checkBoxStates[index],
+                        isChecked = checkBoxStates.value,
                         onChangeCheckBox = { isChecked ->
-                            checkBoxStates[index] = isChecked
+
                         })
 
                 }
@@ -212,35 +227,7 @@ fun CartScreen(orderCart: List<DetailOrderCart>,onClickBack:()->Unit){
                 Text(text = "Chưa áp dụng mã khuyến mại")
             }
         }
-        Row (modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 10.dp)
-            .background(
-                color = Color("#F4EFEB".toColorInt()),
-                shape = RoundedCornerShape(5.dp)
-            ),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ){
-
-            Column (modifier = Modifier
-                .padding(10.dp)){
-                Text(text = "Tổng tiền")
-                Spacer(modifier = Modifier.height(10.dp))
-                Text(
-                    text = FomartUtility().format(price = 60000),
-                    style = TextStyle(fontWeight = FontWeight.Bold)
-                )
-            }
-            Button(onClick = { /*TODO*/ }, modifier = Modifier.wrapContentSize(), colors = ButtonDefaults.buttonColors(
-                backgroundColor = Color("#5D4037".toColorInt()
-                ),
-                contentColor = Color.White
-            )) {
-                Text(text = "Đặt đơn hàng", maxLines = 1, textAlign = TextAlign.Center, style = TextStyle(color = Color.White))
-            }
-
-        }
+        FooterFixed(price = 60000.0F, textButton = "Đặt đơn hàng", onClickButton = {})
     }
 
 

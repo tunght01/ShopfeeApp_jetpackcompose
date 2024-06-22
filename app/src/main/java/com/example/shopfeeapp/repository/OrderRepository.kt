@@ -11,11 +11,11 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
 import org.json.JSONObject
 
-class OrderRepository() {
-    suspend fun getOrderDetail(): List<DetailOrderCart> {
+class OrderRepository(username:String) {
+    suspend fun getOrderDetail(username: String): List<DetailOrderCart> {
         return try {
             Log.e("detail","hihihi")
-            recipeService.getDetailOrder()
+            recipeService.getDetailOrderUser(username)
         } catch (e: Exception) {
 
             // Xử lý ngoại lệ và trả về danh sách rỗng nếu có lỗi

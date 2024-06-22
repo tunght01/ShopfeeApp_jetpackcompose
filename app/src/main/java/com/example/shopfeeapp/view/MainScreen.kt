@@ -27,10 +27,11 @@ import com.example.shopfeeapp.NavigationBottomScreen
 import com.example.shopfeeapp.model.Drink
 
 import com.example.shopfeeapp.model.NavigationBottomScreen
+import com.example.shopfeeapp.model.UserRespone
 import com.example.shopfeeapp.viewmodel.LoginViewModel
 
 @Composable
-fun MainScreen(viewModel: LoginViewModel, onClickScreen: (Drink) -> Unit, onClickLogout:()->Unit) {
+fun MainScreen(viewModel: LoginViewModel,onClickScreen: (Drink) -> Unit, onClickLogout:()->Unit, onClickCart:()->Unit) {
     val navController: NavHostController = rememberNavController()
     Scaffold(bottomBar = { BottomBar(navController = navController) }) { innerPadding ->
         NavHost(
@@ -39,7 +40,7 @@ fun MainScreen(viewModel: LoginViewModel, onClickScreen: (Drink) -> Unit, onClic
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(NavigationBottomScreen.HomeScreen.route) {
-                HomeScreen(navController) { onClickScreen(it) }
+                HomeScreen(navController, onClick = onClickCart, onClickDetailScreen = { onClickScreen(it) })
             }
             composable(NavigationBottomScreen.HistoryScreen.route) {
                 HistoryScreen()

@@ -41,13 +41,18 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.shopfeeapp.R
+import com.example.shopfeeapp.datastore.StoreUser
 import com.example.shopfeeapp.datastore.StoreUserEmail
 import com.example.shopfeeapp.model.LoginRequest
 import com.example.shopfeeapp.model.NavigationBottomScreen
 import com.example.shopfeeapp.model.Screen
 import com.example.shopfeeapp.model.User
+import com.example.shopfeeapp.model.UserRespone
 import com.example.shopfeeapp.viewmodel.LoginViewModel
 import kotlinx.coroutines.launch
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody
+import org.json.JSONObject
 
 @SuppressLint("ResourceAsColor")
 @Composable
@@ -55,7 +60,7 @@ fun LoginScreen(
 
     navHostController: NavHostController,
     modifier: Modifier = Modifier,
-    onClickToMainScreen:()->Unit,
+    onClickToMainScreen:(UserRespone)->Unit,
     onClickToSignupScreen:()->Unit,
 
 ) {
@@ -71,6 +76,7 @@ fun LoginScreen(
 
     // Create an instance of StoreUserEmail
     val storeUserEmail = StoreUserEmail(context)
+    val StoreUser  = StoreUser(context)
     val scope = rememberCoroutineScope()
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -109,14 +115,16 @@ fun LoginScreen(
 
             Button(
                 onClick = {
+
                     val loginRequest = LoginRequest(userValue.trim(),passwprdValue.trim())
-                    viewModel.loginUser(userValue.trim(),passwprdValue.trim()){jwt, user ->
+                    viewModel.loginUser(loginRequest){jwt, user ->
 
                         if (jwt != null) {
                             scope.launch {
-                                storeUserEmail.saveEmail(user!!.email)
+                                storeUserEmail.saveEmail(user!!.username)
+                                StoreUser.saveUser(User(user.id,user.username,user.email,null))
                             }
-                            onClickToMainScreen()
+                            onClickToMainScreen(user!!)
                         }else{
 //                            Toast.makeText(,"Tai khoan hoac mat khau sai",Toast.LENGTH_SHORT)
                         }

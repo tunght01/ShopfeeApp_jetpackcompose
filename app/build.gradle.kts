@@ -90,6 +90,8 @@ dependencies {
     implementation("androidx.datastore:datastore-preferences:1.0.0")
 //    implementation ("org.jetbrains.kotlin:kotlin-parcelize-runtime:$nav_version")
     implementation("io.coil-kt:coil-compose:2.1.0")
+    implementation ("com.google.code.gson:gson:2.8.8")
+    implementation ("com.squareup.retrofit2:converter-gson:latest_version")
 
 
 
