@@ -21,7 +21,7 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 //val api:String = "192.168.0.107"
-val api:String = "172.0.3.43"
+val api:String = "192.168.0.107"
 private val retrofit = Retrofit.Builder().baseUrl("http://$api:1337/").addConverterFactory(GsonConverterFactory.create()).build()
 val recipeService = retrofit.create(ApiService::class.java)
 interface ApiService{

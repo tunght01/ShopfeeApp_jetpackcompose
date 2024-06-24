@@ -232,7 +232,7 @@ fun FooterHomeScreen(totalAmout:Int,nameDrink:String,totalPrice:Int,onClick:()->
 
         Column (modifier = Modifier
             .padding(10.dp)){
-            textFileWhite(title = totalAmout.toString())
+            textFileWhite(title = "$totalAmout đồ uống")
             Spacer(modifier = Modifier.height(10.dp))
             textFileWhite(title = nameDrink)
 

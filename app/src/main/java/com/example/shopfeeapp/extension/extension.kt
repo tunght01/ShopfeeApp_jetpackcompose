@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
@@ -33,6 +34,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.graphics.toColorInt
 import com.example.shopfeeapp.datastore.StoreUserEmail
 import com.example.shopfeeapp.model.FomartUtility
@@ -43,10 +45,26 @@ fun HeaderIconBack(title:String, onClickBack:()->Unit){
         IconButton(onClick = { onClickBack() }) {
             Icon(Icons.Default.ArrowBack, contentDescription = null)
         }
-        Text(text = title)
+        Text(text = title, style = TextStyle(fontSize = 18.sp))
     }
 
 
+}
+@Composable
+fun DividerLine(){
+    Divider(
+        color = Color.LightGray, // Màu sắc của đường line
+        thickness = 4.dp,  // Độ dày của đường line
+        modifier = Modifier.padding(vertical = 5.dp) // Khoảng cách trên dưới của Divider
+    )
+}
+@Composable
+fun DividerLine2(){
+    Divider(
+        color = Color.LightGray, // Màu sắc của đường line
+        thickness = 1.dp,  // Độ dày của đường line
+        modifier = Modifier.padding(vertical = 5.dp) // Khoảng cách trên dưới của Divider
+    )
 }
 @Composable
 fun textFileWhite(title: String,modifier: Modifier=Modifier){

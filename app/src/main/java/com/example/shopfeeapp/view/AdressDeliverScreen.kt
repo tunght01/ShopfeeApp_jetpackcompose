@@ -13,6 +13,7 @@ fun AddressDeliverScreen(){
     }
 }
 @Composable
-fun MethodPaymentItem(){
+fun AddressDeliverItem(){
+
 
 }

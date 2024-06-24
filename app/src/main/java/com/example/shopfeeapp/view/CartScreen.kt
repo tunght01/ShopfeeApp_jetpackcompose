@@ -79,7 +79,10 @@ import com.example.shopfeeapp.viewmodel.ProductViewModel
 fun DetailOrderCartScreen(
     navHostController: NavHostController,
     modifier: Modifier = Modifier,
-    onClickBack: () -> Unit
+    onClickBack: () -> Unit,
+    onClickMethodPay:()->Unit,
+    chose:String?
+
 ){
     val context = LocalContext.current
     val storeUserEmail = StoreUserEmail(context)
@@ -110,7 +113,8 @@ fun DetailOrderCartScreen(
             Log.e("detail", "thanhconmg roi")
             CartScreen(orderCart = viewstate.list, onClickBack = {
                 onClickBack()
-            })
+            },
+                onClickMethodPay = {onClickMethodPay()}, chose= chose)
 
 
         }
@@ -122,9 +126,12 @@ fun DetailOrderCartScreen(
 
 
 @Composable
-fun CartScreen(orderCart: List<DetailOrderCart>,onClickBack:()->Unit){
+fun CartScreen(orderCart: List<DetailOrderCart>,onClickBack:()->Unit,onClickMethodPay:()->Unit, chose:String?){
     val checkBoxStates = remember {
         mutableStateOf(true)
+    }
+    var methodPaymment = remember {
+        mutableStateOf(chose)
     }
 
 
@@ -175,7 +182,8 @@ fun CartScreen(orderCart: List<DetailOrderCart>,onClickBack:()->Unit){
                 thickness = 3.dp,  // Độ dày của đường line
                 modifier = Modifier.padding(vertical = 5.dp) // Khoảng cách trên dưới của Divider
             )
-            MethodPayment("Phương thức thanh toán","Chưa chọn phương thức thanh toán"){
+            MethodPayment("Phương thức thanh toán", status = if(chose != null)  chose else "Chưa chọn phương thức thanh toán"){
+                onClickMethodPay()
 
             }
             Divider(
@@ -252,7 +260,7 @@ fun MethodPayment(
             Text(text = status)
 
         }
-        IconButton(onClick = { /*TODO*/ }) {
+        IconButton(onClick = {onClickOption()}) {
             Icon(Icons.Default.ArrowForwardIos, contentDescription = null, Modifier.size(18.dp))
         }
     }

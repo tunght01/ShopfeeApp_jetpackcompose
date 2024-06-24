@@ -34,6 +34,7 @@ import com.example.shopfeeapp.view.DetailOrderCartScreen
 import com.example.shopfeeapp.view.DetailScreen
 import com.example.shopfeeapp.view.LoginScreen
 import com.example.shopfeeapp.view.MainScreen
+import com.example.shopfeeapp.view.MethodPayment
 import com.example.shopfeeapp.view.SignUpScreen
 import com.example.shopfeeapp.viewmodel.DetailCartViewModel
 import com.example.shopfeeapp.viewmodel.LoginViewModel
@@ -198,9 +199,21 @@ fun Navigation(
 //                CartScreen(onClickBack = {
 //                    navController.popBackStack()
 //                })
+                val chose = navController.previousBackStackEntry?.savedStateHandle?.get<String>("chose")
                 Log.e("tung","deailscrenn composobale")
                 DetailOrderCartScreen(navHostController = navController, modifier = Modifier, onClickBack = {
                     navController.popBackStack()
+                },
+                    onClickMethodPay = {navController.navigate("methodpayment")}, chose = chose)
+            }
+            composable("methodpayment") {
+//
+                MethodPayment(onClickBack = {navController.popBackStack()}, onClickChoseMethod = {chose ->
+                    val currentEntry = navController.currentBackStackEntry
+                    if (currentEntry != null) {
+                        currentEntry.savedStateHandle.set("chose", chose)
+                        navController.navigate("cart")
+                    }
                 })
             }
         }
